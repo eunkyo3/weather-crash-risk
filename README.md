@@ -13,13 +13,14 @@
 - 기상청 종관기상관측(ASOS) 시간자료 (+ AWS 보조) — 기상자료개방포털
 
 ## 기술 스택
-- **분석**: Python (pandas, geopandas — `sjoin_nearest`, `merge_asof`)
-- **저장**: PostgreSQL + PostGIS
-- **시각화**: Leaflet + 카테고리별 GeoJSON (기상 필터 토글)
+- **분석**: Python (pandas, geopandas — `sjoin_nearest`, `merge_asof`), 시간축 KST 고정
+- **저장/실행**: PostgreSQL + PostGIS (**Docker Compose** — `docker compose up`)
+- **시각화**: Leaflet + 카테고리별 정적 GeoJSON (기상 필터 토글)
 
 ## 프로젝트 문서
 - 요구사항 스펙: [`docs/requirements-spec.md`](docs/requirements-spec.md)
 - 구현 계획 (Planner/Architect/Critic 합의): [`docs/implementation-plan.md`](docs/implementation-plan.md)
+- 결정 로그 (deep-interview + grill): [`docs/decisions-log.md`](docs/decisions-log.md)
 
 ## 주요 한계 (정직성)
 - 사망사고 한정 표본 → 소표본 셀은 신뢰구간·경고 표기
@@ -30,3 +31,6 @@
 ```bash
 # 준비 중 — Phase 0 타당성 스파이크부터 진행 예정
 ```
+
+## 라이선스
+코드는 [MIT](LICENSE). 교통사고·기상 데이터는 저장소에 포함되지 않으며 공공데이터 이용범위(출처표시)를 준수합니다.
