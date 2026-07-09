@@ -1,0 +1,40 @@
+# === Secrets / 환경변수 (절대 커밋 금지) ===
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets/
+
+# === API로 수집한 원본 데이터 (대용량, 재현 스크립트로 재수집) ===
+data/raw/
+data/cache/
+*.csv
+*.geojson
+*.parquet
+# 소량 샘플/픽스처는 예외로 두려면 아래처럼 negation 사용
+# !data/samples/*.csv
+
+# === Python ===
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+
+# === Node / 프론트엔드 ===
+node_modules/
+dist/
+build/
+.vite/
+
+# === OMC 운영 상태 (툴 아티팩트 — 전부 무시. 정식 문서는 docs/ 에 있음) ===
+.omc/
+
+# === OS / 에디터 ===
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
