@@ -28,9 +28,30 @@
 - 눈(적설)은 ASOS 관측소 의존
 
 ## 시작하기
+
+### 1. 환경 준비
 ```bash
-# 준비 중 — Phase 0 타당성 스파이크부터 진행 예정
+python -m venv .venv
+./.venv/Scripts/python -m pip install -r requirements.txt   # Windows
+# source .venv/bin/activate && pip install -r requirements.txt  # macOS/Linux
 ```
+
+### 2. 인증키 설정
+```bash
+cp .env.example .env
+# .env 의 DATA_GO_KR_SERVICE_KEY 에 공공데이터포털 디코딩 인증키 입력
+# (기상청 ASOS 15057210 + 도로교통공단 다발지역 15057467/15105289 활용신청 필요)
+```
+
+### 3. 데이터 수집
+```bash
+python -m src.collect.fetch_hotspots   # 다발지역 폴리곤 → data/raw/hotspots/
+python -m src.collect.fetch_weather    # ASOS 시간자료  → data/raw/weather/
+# 사망사고 건별 CSV 는 수동 다운로드 (data/README.md 참고)
+```
+
+> 이후 단계(Phase 0 타당성 스파이크 → PostGIS 적재 → 대시보드)는
+> [`docs/implementation-plan.md`](docs/implementation-plan.md) 참고.
 
 ## 라이선스
 코드는 [MIT](LICENSE). 교통사고·기상 데이터는 저장소에 포함되지 않으며 공공데이터 이용범위(출처표시)를 준수합니다.

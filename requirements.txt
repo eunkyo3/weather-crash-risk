@@ -1,0 +1,13 @@
+# 데이터 수집·분석
+requests>=2.31
+python-dotenv>=1.0
+pandas>=2.0
+
+# 공간 분석 (Phase 2~3에서 사용)
+geopandas>=0.14
+shapely>=2.0
+
+# PostGIS 적재 (Phase 3)
+SQLAlchemy>=2.0
+psycopg2-binary>=2.9
+GeoAlchemy2>=0.14
