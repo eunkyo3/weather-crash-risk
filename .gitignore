@@ -7,13 +7,20 @@
 secrets/
 
 # === API로 수집한 원본 데이터 (대용량, 재현 스크립트로 재수집) ===
-data/raw/
+data/raw/accidents/
+data/raw/weather/
 data/cache/
 *.csv
 *.geojson
 *.parquet
-# 소량 샘플/픽스처는 예외로 두려면 아래처럼 negation 사용
-# !data/samples/*.csv
+
+# 예외: 아래 둘은 저장소에 포함한다.
+#  - 자치구 경계: 공공데이터(KOSTAT 2013, 출처표시로 재배포 가능) + 파이프라인 필수 입력.
+#  - 상대위험 테이블: 원천이 아닌 분석 산출물. Docker 데모가 clone 직후 동작하려면 필요.
+# (data/raw/ 전체가 아니라 하위 디렉토리만 제외해야 아래 negation이 동작한다 —
+#  git은 제외된 디렉토리 내부로 내려가지 않으므로 부모가 제외되면 negation이 무시된다.)
+!data/raw/boundaries/seoul_gu.geojson
+!data/processed/zone_weather_risk.csv
 
 # === Python ===
 __pycache__/
