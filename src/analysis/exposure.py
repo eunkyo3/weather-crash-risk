@@ -6,13 +6,21 @@
     눈  : 신적설(hr3Fhsc) > 0  또는 (강수량 > 0 & 기온 <= 0℃)
     비  : 강수량 >= 0.1mm  &  위 눈 조건 아님
     맑음: 그 외(강수 없음) — 흐림 포함(비강수)
-    (관측 자체가 결측이면 '기타'로 제외)
 
 ASOS 수치 필드는 무강수/무적설 시 빈 문자열('')로 온다 → 0으로 해석.
 기온(ta)만 결측 시 NaN 처리(눈 판정의 기온 조건에서 보수적으로 제외).
+
+**결측 처리(중요):** ASOS는 "강수 없음"과 "관측 결측"을 모두 빈 문자열로 보내므로 둘을
+구분할 수 없다. 따라서 분류는 **결측 시간을 '맑음'에 포함**시킨다 — 즉 `classify_hour`는
+항상 맑음/비/눈 중 하나를 반환하며 '기타' 버킷은 없다. 이는 맑음 분모를 과대추정해
+모든 RR을 상향시킬 수 있는 방향의 편향이나, 관측 커버리지가 100.00%(2007~2025 = 6,940일
+× 24h = 기대 166,560h, 실측 관측 166,559h)라 실질 영향은 미미하다.
+누락 자체는 `weather_coverage()`가 행 단위로
+감시하며, 이 한계는 methodology.md 한계 절에 명시되어 있다.
 """
 from __future__ import annotations
 
+import calendar
 import glob
 import math
 from pathlib import Path
@@ -41,7 +49,11 @@ def _temp(value: object) -> float:
 
 
 def classify_hour(rn: object, hr3Fhsc: object, ta: object) -> str:
-    """한 시간의 ASOS 관측을 기상범주로 분류."""
+    """한 시간의 ASOS 관측을 기상범주로 분류. 항상 맑음/비/눈 중 하나를 반환한다.
+
+    결측(빈 문자열)은 ASOS 규약상 무강수와 구분되지 않으므로 '맑음'으로 떨어진다
+    (모듈 docstring의 '결측 처리' 참조).
+    """
     rain = _num(rn)
     fresh_snow = _num(hr3Fhsc)
     temp = _temp(ta)
@@ -94,6 +106,29 @@ def weather_coverage(df: pd.DataFrame) -> dict:
         "expected_hours": expected_hours,
         "coverage_ratio": observed_hours / expected_hours if expected_hours else math.nan,
     }
+
+
+MIN_MONTH_RATIO = 0.9  # 실측(2007~2025) 최저 충족률 99.86% — 이보다 한참 아래면 이상 신호
+
+
+def short_months(df: pd.DataFrame, min_ratio: float = MIN_MONTH_RATIO) -> list[tuple[str, int, int]]:
+    """관측 시간수가 그 달의 기대치에 크게 못 미치는 달을 찾는다.
+
+    기간 정합성 검사는 달의 **존재**만 보므로, API 부분응답 등으로 잘린 월 파일은
+    그대로 통과한다. 전체 커버리지 비율도 228개월 중 한 달이 비어야 0.4%p 움직일 뿐이라
+    잡히지 않는다. 그 사각지대를 월 단위로 메운다.
+
+    반환: (YYYY-MM, 관측시간, 기대시간) 목록 — 비어 있으면 정상.
+    """
+    tm = pd.to_datetime(df["tm"])
+    counts = tm.dt.strftime("%Y-%m").value_counts()
+    short: list[tuple[str, int, int]] = []
+    for ym, observed in counts.items():
+        year, month = int(ym[:4]), int(ym[5:7])
+        expected = calendar.monthrange(year, month)[1] * 24
+        if observed < expected * min_ratio:
+            short.append((ym, int(observed), expected))
+    return sorted(short)
 
 
 if __name__ == "__main__":
