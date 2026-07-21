@@ -16,6 +16,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 애플리케이션 코드 + 서빙에 필요한 산출물/정적데이터 (비루트 사용자 소유로 복사)
 COPY --chown=appuser:app config ./config
 COPY --chown=appuser:app src ./src
+# 벤더링된 Leaflet — RUN_PIPELINE=1 로 대시보드를 재생성할 때 오프라인 인라인에 필요하다.
+# 빠지면 재생성이 실패한다(그리고 기존 산출물은 원자적 저장 덕에 보존된다).
+COPY --chown=appuser:app assets ./assets
 COPY --chown=appuser:app data/raw/boundaries ./data/raw/boundaries
 COPY --chown=appuser:app data/processed ./data/processed
 COPY --chown=appuser:app outputs ./outputs
