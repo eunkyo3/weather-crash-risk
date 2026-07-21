@@ -2,12 +2,17 @@
 requests>=2.31
 python-dotenv>=1.0
 pandas>=2.0
+openpyxl>=3.1          # TAAS 사고 엑셀(.xlsx) 읽기
 
-# 공간 분석 (Phase 2~3에서 사용)
-geopandas>=0.14
-shapely>=2.0
+# 지도 (자치구 choropleth — 좌표 공간조인 없음, folium+pandas로 충분)
+folium>=0.16           # 자치구 choropleth + 기상필터 레이어 토글
+mapclassify>=2.6       # choropleth 분위수 구간화
 
-# PostGIS 적재 (Phase 3)
-SQLAlchemy>=2.0
-psycopg2-binary>=2.9
-GeoAlchemy2>=0.14
+# 공간 분석 (선택 — 현 설계는 구 라벨 기반이라 불필요. 좌표 도입 시 주석 해제)
+# geopandas>=0.14
+# shapely>=2.0
+
+# PostGIS 적재 (선택 — MVP는 정적 GeoJSON으로 충분. 포트폴리오용이면 주석 해제)
+# SQLAlchemy>=2.0
+# psycopg2-binary>=2.9
+# GeoAlchemy2>=0.14

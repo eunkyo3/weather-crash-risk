@@ -1,0 +1,10 @@
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src"]
+
+[tool.ruff.lint]
+# pyflakes(F)만 CI 게이트로 사용 — 미사용 import/변수, 정의되지 않은 이름 등 실제 결함 탐지.
+# E(pycodestyle 스타일)·I(import 정렬)는 경고성이라 제외: 기존 src 코드 수정 없이도
+# CI가 "치명 오류 없음"을 정확히 반영하도록 함. line-length는 편집기/향후 코드용으로 유지.
+select = ["F"]

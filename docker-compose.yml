@@ -1,0 +1,16 @@
+services:
+  dashboard:
+    build: .
+    image: weather-crash-risk
+    container_name: weather-crash-risk
+    ports:
+      - "8000:8000"
+    environment:
+      # 기본은 이미지에 포함된 대시보드를 서빙. 데이터에서 재생성하려면 1로.
+      - RUN_PIPELINE=${RUN_PIPELINE:-0}
+      - DATA_GO_KR_SERVICE_KEY=${DATA_GO_KR_SERVICE_KEY:-}
+    restart: unless-stopped
+    # RUN_PIPELINE=1 로 재생성하려면 아래 볼륨을 활성화(호스트 데이터/산출물 공유):
+    # volumes:
+    #   - ./data:/app/data
+    #   - ./outputs:/app/outputs

@@ -1,0 +1,13 @@
+# 빌드 컨텍스트에서 제외(이미지 경량화·비밀 보호)
+.venv/
+.git/
+.omc/
+**/__pycache__/
+*.pyc
+.env
+# 대용량 원천 데이터(서빙엔 불필요 — 경계/집계결과/대시보드만 COPY)
+data/raw/accidents/
+data/raw/weather/
+data/cache/
+docs/
+*.md
