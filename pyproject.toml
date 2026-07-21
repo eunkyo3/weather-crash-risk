@@ -1,3 +1,10 @@
+[tool.pytest.ini_options]
+# 저장소 루트를 import 경로에 추가 — `pytest`(bare)와 `python -m pytest` 모두에서
+# `from src.analysis... import ...` 가 동작하게 한다. `python -m` 은 CWD를 sys.path에
+# 넣지만 bare `pytest` 는 넣지 않아, 이 설정이 없으면 CI에서만 ModuleNotFoundError 가 난다.
+pythonpath = ["."]
+testpaths = ["tests"]
+
 [tool.ruff]
 line-length = 100
 target-version = "py312"
